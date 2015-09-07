@@ -17,6 +17,7 @@ var config = require('../config');
 
 var {
   SliderIOS,
+  SwitchIOS,
   Text,
   StyleSheet,
   View,
@@ -108,7 +109,6 @@ var VenueTab = React.createClass({
       var coords = nextProps.geolocation.coords;
       var distance = this.calculateDistance(coords, venue);
     }
-
     fetch(route)
       .then(response => response.json())
       .then(json => {
@@ -286,6 +286,12 @@ var VenueTab = React.createClass({
       }
     }
   },
+  toggleSwitch: function (value) {
+    this.setState({
+      checkedIn: value,
+      currentlyAt: value ? this.props.venue.id : null
+    });
+  },
 
   render() {
     var venue = this.props.venue;
@@ -307,6 +313,14 @@ var VenueTab = React.createClass({
         <Text style={styles.text} >
           Time: {venue.datetime}
         </Text>
+        <Text style={styles.text} >
+          atVenue: {this.state.atVenue + ''}
+        </Text>
+        <SwitchIOS
+          disabled={!this.state.atVenue}
+          value={!!this.state.checkedIn && this.state.currentlyAt === venue.id}
+          onValueChange={(value) => this.toggleSwitch(value)}
+        />
         <Text style={[styles.text, styles.yourRating]} >
           Overall rating: {this.state.overallRating} | Your last rating: {this.state.voteValue}
         </Text>
