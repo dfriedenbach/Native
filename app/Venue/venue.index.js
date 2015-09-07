@@ -313,14 +313,19 @@ var VenueTab = React.createClass({
         <Text style={styles.text} >
           Time: {venue.datetime}
         </Text>
-        <Text style={styles.text} >
-          atVenue: {this.state.atVenue + ''}
-        </Text>
-        <SwitchIOS
-          disabled={!this.state.atVenue}
-          value={!!this.state.checkedIn && this.state.currentlyAt === venue.id}
-          onValueChange={(value) => this.toggleSwitch(value)}
-        />
+        <View style={styles.outerSwitchBox}>
+          <Text style={[styles.text, styles.checkInText]} >
+            Are you there?  {(!!this.state.checkedIn && this.state.currentlyAt === venue.id) ? 'Yes' : ' No'}
+          </Text>
+          <View style={styles.innerSwitchBox}>
+            <SwitchIOS
+              style={styles.checkInSwitch}
+              disabled={!this.state.atVenue}
+              value={!!this.state.checkedIn && this.state.currentlyAt === venue.id}
+              onValueChange={(value) => this.toggleSwitch(value)}
+            />
+          </View>
+        </View>
         <Text style={[styles.text, styles.yourRating]} >
           Overall rating: {this.state.overallRating} | Your last rating: {this.state.voteValue}
         </Text>
@@ -541,6 +546,34 @@ var styles = StyleSheet.create({
     flex: 1,
     width: 70,
     height: 70,
+    margin: 0,
+    padding: 0
+  },
+
+  outerSwitchBox: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    margin: 0,
+    padding: 0
+  },
+  innerSwitchBox: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    margin: 0,
+    padding: 0
+  },
+  checkInText: {
+    flex: 1.5,
+    alignSelf: 'center',
+    textAlign: 'right',
+    margin: 0,
+    padding: 0,
+    marginRight: 20
+  },
+  checkInSwitch: {
+    flex: 1,
+    alignSelf: 'center',
     margin: 0,
     padding: 0
   }
