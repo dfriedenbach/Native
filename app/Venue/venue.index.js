@@ -286,7 +286,53 @@ var VenueTab = React.createClass({
       }
     }
   },
-  toggleSwitch: function (value) {
+  toggleCheckedIn: function (value) {
+    if (value) {
+      if (this.state.checkedIn && this.state.currentlyAt !== this.props.venue.id) {
+        fetch(config.serverURL + '/api/venues/' + this.state.currentlyAt)
+        .then(response => response.json())
+        .then(json => {
+          json.attendees--;
+          fetch(config.serverURL + '/api/venues', {
+            method: 'put',
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(json)
+          })
+        })
+      }
+      fetch(config.serverURL + '/api/venues/' + this.props.venue.id)
+      .then(response => response.json())
+      .then(json => {
+        json.attendees++;
+        console.log(json.attendees);
+        fetch(config.serverURL + '/api/venues', {
+          method: 'put',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(json)
+        })
+      })
+    } else {
+      fetch(config.serverURL + '/api/venues/' + this.state.currentlyAt)
+      .then(response => response.json())
+      .then(json => {
+        json.attendees--;
+        console.log(json.attendees);
+        fetch(config.serverURL + '/api/venues', {
+          method: 'put',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(json)
+        })
+      })
+    }
     this.setState({
       checkedIn: value,
       currentlyAt: value ? this.props.venue.id : null
@@ -311,7 +357,7 @@ var VenueTab = React.createClass({
           Address: {venue.address}
         </Text>
         <Text style={styles.text} >
-          Time: {venue.datetime}
+          Attendees: {venue.attendees}
         </Text>
         <View style={styles.outerSwitchBox}>
           <Text style={[styles.text, styles.checkInText]} >
@@ -322,7 +368,7 @@ var VenueTab = React.createClass({
               style={styles.checkInSwitch}
               disabled={!this.state.atVenue}
               value={!!this.state.checkedIn && this.state.currentlyAt === venue.id}
-              onValueChange={(value) => this.toggleSwitch(value)}
+              onValueChange={(value) => this.toggleCheckedIn(value)}
             />
           </View>
         </View>
